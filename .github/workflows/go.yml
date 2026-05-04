@@ -1,0 +1,27 @@
+name: Build APK
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build APK with Docker
+        run: |
+          # On donne les droits d'écriture au dossier pour Docker
+          chmod -R 777 .
+          docker run --rm \
+            -v ${{ github.workspace }}:/home/user/hostcwd \
+            kivy/buildozer \
+            buildozer android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mon-IA-APK
+          path: bin/*.apk
